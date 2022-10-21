@@ -1,0 +1,97 @@
+definitions:
+  model.ReserveBills:
+    properties:
+      balance:
+        type: integer
+      cost:
+        type: integer
+      order_id:
+        type: integer
+      service_id:
+        type: integer
+      success:
+        type: boolean
+      user_id:
+        type: integer
+    type: object
+  model.User:
+    properties:
+      balance:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Api Server for Avito
+  title: App Api
+  version: "1.0"
+paths:
+  /addBalance:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Balance info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "422":
+          description: Unprocessable Entity
+      tags:
+      - AddBalance
+  /getBalance:
+    post:
+      consumes:
+      - application/json
+      description: Use without balance!
+      parameters:
+      - description: user_id
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "422":
+          description: Unprocessable Entity
+      tags:
+      - GetBalance
+  /reserve:
+    post:
+      consumes:
+      - application/json
+      description: Can use without balance, success
+      parameters:
+      - description: Reserve info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.ReserveBills'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      tags:
+      - Reserve
+swagger: "2.0"
