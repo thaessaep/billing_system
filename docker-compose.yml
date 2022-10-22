@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  app:
+    build: ./
+    command: ./app
+    ports:
+      - 8000:8080
+    restart: on-failure
+    depends_on:
+      - db
+    environment:
+      - POSTGRES_PASSWORD=password
+
+  db:
+    restart: always
+    image: postgres
+    volumes:
+      # copy the sql script to create tables
+      - ./create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+      - ./postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=password
+
+    ports:
+      - 5436:5432
+
+volumes:
+  postgres:

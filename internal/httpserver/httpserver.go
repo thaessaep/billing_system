@@ -23,6 +23,7 @@ func New(config *Config) *HttpServer {
 }
 
 func (s *HttpServer) Start() error {
+	println("Start server <3")
 	s.configureRouter()
 
 	err := s.configureStorage()
