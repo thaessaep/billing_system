@@ -3,12 +3,18 @@ package storage
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/thaessaep/billingSystem/internal/model"
 )
 
 type ReserveBillsRepository struct {
 	storage *Storage
+}
+
+type ReportData struct {
+	Order_id int
+	Sum      int
 }
 
 func (rB *ReserveBillsRepository) checkForValid(r *model.ReserveBills) error {
@@ -45,8 +51,9 @@ func (rB *ReserveBillsRepository) AddReserveBill(r *model.ReserveBills) error {
 		}
 
 		query = fmt.Sprintf(
-			"UPDATE reserve_bills SET success=%t WHERE order_id=%d AND service_id=%d AND cost=%d AND user_id=%d",
+			"UPDATE reserve_bills SET success=%t, datetime=%d WHERE order_id=%d AND service_id=%d AND cost=%d AND user_id=%d",
 			*r.Success,
+			r.Datetime,
 			r.OrderId,
 			r.ServiceId,
 			r.Cost,
@@ -74,6 +81,33 @@ func (rB *ReserveBillsRepository) AddReserveBill(r *model.ReserveBills) error {
 	}
 
 	return nil
+}
+
+func (rB *ReserveBillsRepository) Report(year int, month int) ([]ReportData, error) {
+	rs := []ReportData{}
+	t_start := time.Date(year, time.Month(month), 0, 0, 0, 0, 0, time.UTC).Unix()
+	t_end := time.Date(year, time.Month(month+1), 0, 0, 0, 0, 0, time.UTC).Unix()
+
+	query := fmt.Sprintf(
+		"SELECT order_id, SUM(cost) FROM reserve_bills WHERE success=TRUE AND datetime > %d AND datetime < %d GROUP BY order_id",
+		t_start,
+		t_end,
+	)
+
+	rows, err := rB.storage.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var row ReportData
+		if err := rows.Scan(&row.Order_id, &row.Sum); err != nil {
+			return nil, err
+		}
+		rs = append(rs, row)
+	}
+	return rs, nil
 }
 
 func (rB *ReserveBillsRepository) checkForExist(r *model.ReserveBills) bool {

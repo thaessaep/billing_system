@@ -3,6 +3,7 @@ package httpserver
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/thaessaep/billingSystem/internal/model"
@@ -38,6 +39,7 @@ func (s *HttpServer) configureRouter() {
 	s.router.HandleFunc("/addBalance", s.addBalance())
 	s.router.HandleFunc("/getBalance", s.getBalance())
 	s.router.HandleFunc("/reserve", s.reserve())
+	s.router.HandleFunc("/report", s.report())
 }
 
 func (s *HttpServer) configureStorage() error {
@@ -159,7 +161,8 @@ func (s *HttpServer) reserve() http.HandlerFunc {
 			User: model.User{
 				UserId: req.UserId,
 			},
-			Success: req.Success,
+			Success:  req.Success,
+			Datetime: time.Now().Unix(),
 		}
 
 		if err := s.storage.ReserveBills().AddReserveBill(rB); err != nil {
@@ -168,6 +171,36 @@ func (s *HttpServer) reserve() http.HandlerFunc {
 		}
 
 		s.respond(w, r, http.StatusAccepted, rB)
+	}
+}
+
+// @Tags Report
+// @Accept json
+// @Produce json
+// @Param year path integer true "Year"
+// @Param month path integer true "Month"
+// @Success 200
+// @Failure 400
+// @Router /report [post]
+func (s *HttpServer) report() http.HandlerFunc {
+	type request struct {
+		Year  int `json:"year"`
+		Month int `json:"month"`
+	}
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		req := &request{}
+		if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+			s.error(w, r, http.StatusBadRequest, err)
+			return
+		}
+
+		report, err := s.storage.ReserveBills().Report(req.Year, req.Month)
+		if err != nil {
+			s.error(w, r, http.StatusBadRequest, err)
+			return
+		}
+		s.respond(w, r, http.StatusAccepted, report)
 	}
 }
 

@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS "users"(
 CREATE TABLE IF NOT EXISTS "reserve_bills"(
 	
 	success boolean,
+	datetime integer,
 	order_id integer NOT NULL,
 	service_id integer NOT NULL,
 	cost integer NOT NULL,

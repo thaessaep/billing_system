@@ -5,6 +5,8 @@ definitions:
         type: integer
       cost:
         type: integer
+      datetime:
+        type: integer
       order_id:
         type: integer
       service_id:
@@ -73,6 +75,30 @@ paths:
           description: Unprocessable Entity
       tags:
       - GetBalance
+  /report:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Year
+        in: path
+        name: year
+        required: true
+        type: integer
+      - description: Month
+        in: path
+        name: month
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      tags:
+      - Report
   /reserve:
     post:
       consumes:

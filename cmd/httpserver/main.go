@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"time"
 
 	"github.com/thaessaep/billingSystem/internal/httpserver"
 )
@@ -13,6 +14,8 @@ import (
 // @host localhost:8080
 
 func main() {
+	time.Unix(0, 0)
+
 	config := httpserver.NewConfig()
 
 	s := httpserver.New(config)

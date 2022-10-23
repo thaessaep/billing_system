@@ -87,6 +87,43 @@ const docTemplate = `{
                 }
             }
         },
+        "/report": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Report"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Year",
+                        "name": "year",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Month",
+                        "name": "month",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
         "/reserve": {
             "post": {
                 "description": "Can use without balance, success",
@@ -129,6 +166,9 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "cost": {
+                    "type": "integer"
+                },
+                "datetime": {
                     "type": "integer"
                 },
                 "order_id": {
