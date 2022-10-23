@@ -13,7 +13,7 @@ cd __path_to_dir__
 ```
 git clone https://github.com/thaessaep/billingSystem.git
 ```
-Затем, находясь **в той же папке** введите команду:
+Затем, в консоли перейдите в папку **deployments** и введите команду:
 ```
 make build
 ```

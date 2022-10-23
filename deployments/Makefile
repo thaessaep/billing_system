@@ -1,6 +1,6 @@
 build:
 	go mod tidy
-	go build -v ./cmd/httpserver
+	go build -v ../cmd/httpserver
 
 swagger:
 	GO111MODULE=off swagger generate spec -o ./docs/swagger.yaml --scan-model

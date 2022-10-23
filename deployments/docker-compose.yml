@@ -2,7 +2,9 @@ version: '3.8'
 
 services:
   app:
-    build: ./
+    build:
+      context: ../
+      dockerfile: ./build/Dockerfile
     command: ./app
     ports:
       - 8000:8080
@@ -18,7 +20,7 @@ services:
     volumes:
       # copy the sql script to create tables
       - ./create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
-      - ./postgres_data:/var/lib/postgresql/data
+      - ../postgres_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=password
 
